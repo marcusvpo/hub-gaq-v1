@@ -18,6 +18,8 @@ export default function ClientLayout() {
   const { profile, signOut } = useAuth();
   const navigate = useNavigate();
 
+  const { isSidebarCollapsed, toggleSidebar } = useAppStore();
+
   const handleSignOut = async () => {
     await signOut();
     navigate("/login");
@@ -26,7 +28,7 @@ export default function ClientLayout() {
   return (
     <div className="app-layout">
       <aside className="sidebar">
-        <div className="sidebar-header">
+        <div className="sidebar-header" style={{ position: "relative" }}>
           <div
             style={{
               width: 36,
@@ -158,12 +160,12 @@ export default function ClientLayout() {
             className="nav-item"
             style={{ width: "100%", color: "#94A3B8" }}
           >
-            <LogOut className="icon" /> Sair
+            <LogOut className="icon" /> <span className="nav-label">Sair</span>
           </button>
         </div>
       </aside>
 
-      <main className="main-content">
+      <main className={`main-content ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <Outlet />
       </main>
     </div>

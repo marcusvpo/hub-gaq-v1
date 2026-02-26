@@ -22,12 +22,15 @@ import {
   UserCheck,
 } from "lucide-react";
 import { useState } from "react";
+import { useAppStore } from "@/store/useAppStore";
 
 export default function AdminLayout() {
   const { profile, signOut } = useAuth();
   const { clientes, selectedCliente, selectCliente } = useCliente();
   const navigate = useNavigate();
   const [showClientePicker, setShowClientePicker] = useState(false);
+
+  const { isSidebarCollapsed, toggleSidebar } = useAppStore();
 
   const handleSignOut = async () => {
     await signOut();
@@ -39,7 +42,7 @@ export default function AdminLayout() {
   return (
     <div className="app-layout">
       <aside className="sidebar">
-        <div className="sidebar-header">
+        <div className="sidebar-header" style={{ position: "relative" }}>
           <div
             style={{
               width: 36,
@@ -368,12 +371,12 @@ export default function AdminLayout() {
             className="nav-item"
             style={{ width: "100%", color: "#94A3B8" }}
           >
-            <LogOut className="icon" /> Sair
+            <LogOut className="icon" /> <span className="nav-label">Sair</span>
           </button>
         </div>
       </aside>
 
-      <main className="main-content">
+      <main className={`main-content ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <Outlet />
       </main>
     </div>
