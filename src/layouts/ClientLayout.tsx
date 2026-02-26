@@ -12,7 +12,10 @@ import {
   TrendingUp,
   UtensilsCrossed,
   Calculator,
+  PanelLeft,
+  PanelLeftClose,
 } from "lucide-react";
+import { useAppStore } from "@/store/useAppStore";
 
 export default function ClientLayout() {
   const { profile, signOut } = useAuth();
@@ -27,25 +30,48 @@ export default function ClientLayout() {
 
   return (
     <div className="app-layout">
-      <aside className="sidebar">
+      <aside className={`sidebar ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <div className="sidebar-header" style={{ position: "relative" }}>
-          <div
+          {!isSidebarCollapsed && (
+            <>
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  background: "linear-gradient(135deg, #3B82F6, #06B6D4)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#fff",
+                  fontWeight: 800,
+                  fontSize: "1.1rem",
+                }}
+              >
+                Q
+              </div>
+              <span className="sidebar-brand">HUB Ariel Quadros</span>
+            </>
+          )}
+          <button
+            onClick={toggleSidebar}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              background: "linear-gradient(135deg, #3B82F6, #06B6D4)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: "1.1rem",
+              position: "absolute",
+              right: isSidebarCollapsed ? "50%" : 12,
+              transform: isSidebarCollapsed ? "translateX(50%)" : "none",
+              background: "none",
+              border: "none",
+              color: "#94A3B8",
+              cursor: "pointer",
+              padding: 4,
             }}
           >
-            Q
-          </div>
-          <span className="sidebar-brand">Hub GAQ</span>
+            {isSidebarCollapsed ? (
+              <PanelLeft size={20} />
+            ) : (
+              <PanelLeftClose size={20} />
+            )}
+          </button>
         </div>
 
         <nav className="sidebar-nav">

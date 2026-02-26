@@ -19,6 +19,11 @@ interface Cliente {
   contato_email: string | null;
   cidade: string | null;
   estado: string | null;
+  ativo?: boolean;
+  score_atual?: number | null;
+  classificacao_atual?: string | null;
+  nome_donos?: string | null;
+  status_relacionamento?: string;
 }
 
 interface ClienteContextType {

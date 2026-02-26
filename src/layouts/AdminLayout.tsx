@@ -20,9 +20,13 @@ import {
   Target,
   TrendingUp,
   UserCheck,
+  PanelLeftClose,
+  PanelLeft,
+  Kanban,
 } from "lucide-react";
 import { useState } from "react";
 import { useAppStore } from "@/store/useAppStore";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function AdminLayout() {
   const { profile, signOut } = useAuth();
@@ -41,25 +45,48 @@ export default function AdminLayout() {
 
   return (
     <div className="app-layout">
-      <aside className="sidebar">
+      <aside className={`sidebar ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <div className="sidebar-header" style={{ position: "relative" }}>
-          <div
+          {!isSidebarCollapsed && (
+            <>
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  background: "linear-gradient(135deg, #3B82F6, #06B6D4)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#fff",
+                  fontWeight: 800,
+                  fontSize: "1.1rem",
+                }}
+              >
+                Q
+              </div>
+              <span className="sidebar-brand">Ariel Quadros</span>
+            </>
+          )}
+          <button
+            onClick={toggleSidebar}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              background: "linear-gradient(135deg, #3B82F6, #06B6D4)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: "1.1rem",
+              position: "absolute",
+              right: isSidebarCollapsed ? "50%" : 12,
+              transform: isSidebarCollapsed ? "translateX(50%)" : "none",
+              background: "none",
+              border: "none",
+              color: "#94A3B8",
+              cursor: "pointer",
+              padding: 4,
             }}
           >
-            Q
-          </div>
-          <span className="sidebar-brand">Hub GAQ</span>
+            {isSidebarCollapsed ? (
+              <PanelLeft size={20} />
+            ) : (
+              <PanelLeftClose size={20} />
+            )}
+          </button>
         </div>
 
         <nav className="sidebar-nav">
@@ -75,7 +102,14 @@ export default function AdminLayout() {
             to="/admin/clientes"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <Users className="icon" /> Clientes
+            <Users className="icon" /> {!isSidebarCollapsed && "Clientes"}
+          </NavLink>
+          <NavLink
+            to="/admin/leads"
+            className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+          >
+            <Kanban className="icon" />{" "}
+            {!isSidebarCollapsed && "Leads & Follow-up"}
           </NavLink>
 
           {/* Client Picker */}
@@ -377,7 +411,10 @@ export default function AdminLayout() {
       </aside>
 
       <main className={`main-content ${isSidebarCollapsed ? "collapsed" : ""}`}>
-        <Outlet />
+        <div className="page-wrapper">
+          <Breadcrumbs />
+          <Outlet />
+        </div>
       </main>
     </div>
   );

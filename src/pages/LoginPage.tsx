@@ -94,7 +94,7 @@ export default function LoginPage() {
             {isAdminMode ? <Shield size={28} /> : "Q"}
           </div>
         </div>
-        <h1 className="auth-title">Hub GAQ</h1>
+        <h1 className="auth-title">HUB Ariel Quadros</h1>
         <p className="auth-subtitle">
           {isAdminMode ? "Acesso Administrativo" : "Acesse sua plataforma"}
         </p>

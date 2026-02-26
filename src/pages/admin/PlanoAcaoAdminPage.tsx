@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   X,
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PlanoAcao {
   id: string;
@@ -85,6 +86,7 @@ const emptyForm = {
 };
 
 export default function PlanoAcaoAdminPage() {
+  const { profile } = useAuth();
   const { selectedCliente } = useCliente();
   const [planos, setPlanos] = useState<PlanoAcao[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
@@ -93,6 +95,8 @@ export default function PlanoAcaoAdminPage() {
   const [form, setForm] = useState(emptyForm);
   const [filterStatus, setFilterStatus] = useState<string>("todos");
   const [newSubtarefa, setNewSubtarefa] = useState("");
+  const [isCustomResponsavel, setIsCustomResponsavel] = useState(false);
+  const [clienteContatos, setClienteContatos] = useState<any[]>([]);
 
   useEffect(() => {
     supabase
@@ -105,8 +109,20 @@ export default function PlanoAcaoAdminPage() {
   }, []);
 
   useEffect(() => {
-    if (selectedCliente) loadPlanos();
+    if (selectedCliente) {
+      loadPlanos();
+      loadClienteContatos();
+    }
   }, [selectedCliente]);
+
+  async function loadClienteContatos() {
+    if (!selectedCliente) return;
+    const { data } = await supabase
+      .from("cliente_contatos")
+      .select("*")
+      .eq("cliente_id", selectedCliente.id);
+    if (data) setClienteContatos(data);
+  }
 
   async function loadPlanos() {
     if (!selectedCliente) return;
@@ -140,6 +156,7 @@ export default function PlanoAcaoAdminPage() {
   function openNew() {
     setEditingId(null);
     setForm(emptyForm);
+    setIsCustomResponsavel(false);
     setShowModal(true);
   }
 
@@ -154,6 +171,21 @@ export default function PlanoAcaoAdminPage() {
       area_id: p.area_id || "",
       status: p.status,
     });
+
+    // Check if current responsavel is standard or custom
+    const adminName = profile?.full_name || "Admin";
+    const donos = selectedCliente?.nome_donos || "";
+
+    if (
+      p.responsavel &&
+      p.responsavel !== adminName &&
+      p.responsavel !== donos
+    ) {
+      setIsCustomResponsavel(true);
+    } else {
+      setIsCustomResponsavel(false);
+    }
+
     setShowModal(true);
   }
 
@@ -773,23 +805,122 @@ export default function PlanoAcaoAdminPage() {
                       fontSize: "0.8rem",
                       fontWeight: 600,
                       color: "#64748B",
+                      display: "flex",
+                      justifyContent: "space-between",
                     }}
                   >
-                    Responsável
+                    <span>Responsável</span>
+                    <button
+                      onClick={() => {
+                        setIsCustomResponsavel(!isCustomResponsavel);
+                        setForm({ ...form, responsavel: "" });
+                      }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#3B82F6",
+                        fontSize: "0.7rem",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      {isCustomResponsavel ? "Selecionar Padrão" : "Outro"}
+                    </button>
                   </label>
-                  <input
-                    value={form.responsavel}
-                    onChange={(e) =>
-                      setForm({ ...form, responsavel: e.target.value })
-                    }
-                    style={{
-                      width: "100%",
-                      padding: "8px 12px",
-                      borderRadius: 8,
-                      border: "1px solid #E2E8F0",
-                      marginTop: 4,
-                    }}
-                  />
+
+                  {!isCustomResponsavel ? (
+                    <div
+                      style={{
+                        marginTop: 4,
+                        maxHeight: 120,
+                        overflowY: "auto",
+                        border: "1px solid #E2E8F0",
+                        borderRadius: 8,
+                        padding: "4px 8px",
+                        background: "#F8FAFC",
+                      }}
+                    >
+                      {[
+                        {
+                          id: "admin",
+                          nome: profile?.full_name || "Consultor Ariel",
+                        },
+                        ...(selectedCliente?.nome_donos
+                          ? [{ id: "dono", nome: selectedCliente.nome_donos }]
+                          : []),
+                        ...clienteContatos.map((c) => ({
+                          id: c.id,
+                          nome: c.nome,
+                        })),
+                      ].map((opt) => {
+                        const isSelected = form.responsavel
+                          ?.split(", ")
+                          .includes(opt.nome);
+                        return (
+                          <label
+                            key={opt.id}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 8,
+                              padding: "4px 0",
+                              cursor: "pointer",
+                              fontSize: "0.8rem",
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={(e) => {
+                                let current = form.responsavel
+                                  ? form.responsavel.split(", ")
+                                  : [];
+                                if (e.target.checked) {
+                                  current = [...current, opt.nome];
+                                } else {
+                                  current = current.filter(
+                                    (n) => n !== opt.nome,
+                                  );
+                                }
+                                setForm({
+                                  ...form,
+                                  responsavel: current.join(", "),
+                                });
+                              }}
+                            />
+                            {opt.nome}
+                          </label>
+                        );
+                      })}
+                      {clienteContatos.length === 0 &&
+                        !selectedCliente?.nome_donos && (
+                          <div
+                            style={{
+                              fontSize: "0.75rem",
+                              color: "#94A3B8",
+                              padding: "4px 0",
+                            }}
+                          >
+                            Nenhum contato extra encontrado.
+                          </div>
+                        )}
+                    </div>
+                  ) : (
+                    <input
+                      value={form.responsavel || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, responsavel: e.target.value })
+                      }
+                      placeholder="Nome do responsável..."
+                      style={{
+                        width: "100%",
+                        padding: "8px 12px",
+                        borderRadius: 8,
+                        border: "1px solid #E2E8F0",
+                        marginTop: 4,
+                      }}
+                    />
+                  )}
                 </div>
                 <div>
                   <label

@@ -4,13 +4,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCliente } from "@/contexts/ClienteContext";
 import {
   Users,
-  Package,
-  TrendingUp,
-  ClipboardCheck,
   AlertTriangle,
   Calendar,
   Activity,
   Star,
+  MessageSquare,
 } from "lucide-react";
 import {
   RadarChart,
@@ -23,9 +21,9 @@ import {
 
 interface Stats {
   clientes: number;
-  insumos: number;
-  fichas: number;
-  avaliacoes: number;
+  leads_contato: number;
+  acoes_abertas: number;
+  score_medio: number;
 }
 
 interface ClienteScore {
@@ -67,9 +65,9 @@ export default function AdminDashboard() {
   const { clientes } = useCliente();
   const [stats, setStats] = useState<Stats>({
     clientes: 0,
-    insumos: 0,
-    fichas: 0,
-    avaliacoes: 0,
+    leads_contato: 0,
+    acoes_abertas: 0,
+    score_medio: 0,
   });
   const [clienteScores, setClienteScores] = useState<ClienteScore[]>([]);
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>(
@@ -86,19 +84,39 @@ export default function AdminDashboard() {
 
   async function loadAll() {
     // Stats
-    const [c, i, f, a] = await Promise.all([
-      supabase.from("clientes").select("id", { count: "exact", head: true }),
-      supabase.from("insumos").select("id", { count: "exact", head: true }),
+    const [c, l, ac] = await Promise.all([
       supabase
-        .from("fichas_tecnicas")
-        .select("id", { count: "exact", head: true }),
-      supabase.from("avaliacoes").select("id", { count: "exact", head: true }),
+        .from("clientes")
+        .select("id", { count: "exact", head: true })
+        .eq("ativo", true),
+      supabase
+        .from("leads")
+        .select("id", { count: "exact", head: true })
+        .in("status", ["novo", "contato_feito", "reuniao_agendada"]),
+      supabase
+        .from("planos_acao")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "pendente"),
     ]);
+
+    // Calcular score médio
+    const { data: avScores } = await supabase
+      .from("avaliacoes")
+      .select("score_total")
+      .eq("status", "concluido");
+    const avg =
+      avScores && avScores.length > 0
+        ? Math.round(
+            avScores.reduce((acc, curr) => acc + (curr.score_total || 0), 0) /
+              avScores.length,
+          )
+        : 0;
+
     setStats({
       clientes: c.count ?? 0,
-      insumos: i.count ?? 0,
-      fichas: f.count ?? 0,
-      avaliacoes: a.count ?? 0,
+      leads_contato: l.count ?? 0,
+      acoes_abertas: ac.count ?? 0,
+      score_medio: avg,
     });
 
     // Latest scores per client
@@ -248,21 +266,21 @@ export default function AdminDashboard() {
       color: "blue",
     },
     {
-      label: "Insumos Cadastrados",
-      value: stats.insumos,
-      icon: Package,
+      label: "Leads em Contato",
+      value: stats.leads_contato,
+      icon: MessageSquare,
       color: "green",
     },
     {
-      label: "Fichas Técnicas",
-      value: stats.fichas,
-      icon: TrendingUp,
+      label: "Ações Pendentes",
+      value: stats.acoes_abertas,
+      icon: Activity,
       color: "purple",
     },
     {
-      label: "Diagnósticos",
-      value: stats.avaliacoes,
-      icon: ClipboardCheck,
+      label: "Score Médio Rede",
+      value: stats.score_medio,
+      icon: Star,
       color: "yellow",
     },
   ];
@@ -274,7 +292,9 @@ export default function AdminDashboard() {
           <h1 className="page-title">
             Olá, {profile?.full_name || "Consultor"} 👋
           </h1>
-          <p className="page-subtitle">Resumo geral da plataforma Hub GAQ</p>
+          <p className="page-subtitle">
+            Resumo geral da plataforma HUB Ariel Quadros
+          </p>
         </div>
       </div>
       <div className="page-body">

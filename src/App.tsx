@@ -19,6 +19,7 @@ import EstoquePage from "@/pages/admin/EstoquePage";
 import MetasPage from "@/pages/admin/MetasPage";
 import EvolucaoPage from "@/pages/admin/EvolucaoPage";
 import PessoasPage from "@/pages/admin/PessoasPage";
+import LeadsPage from "@/pages/admin/LeadsPage";
 import ClientDashboard from "@/pages/client/ClientDashboard";
 import RankingProdutosPage from "@/pages/client/RankingProdutosPage";
 import AlertaCustosPage from "@/pages/client/AlertaCustosPage";
@@ -95,6 +96,7 @@ export default function App() {
           >
             <Route index element={<AdminDashboard />} />
             <Route path="clientes" element={<ClientesPage />} />
+            <Route path="leads" element={<LeadsPage />} />
             <Route path="insumos" element={<InsumosPage />} />
             <Route path="fichas-tecnicas" element={<FichasTecnicasPage />} />
             <Route path="simulador" element={<SimuladorCMVPage />} />
