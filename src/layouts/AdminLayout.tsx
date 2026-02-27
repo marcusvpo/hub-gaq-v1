@@ -23,6 +23,7 @@ import {
   PanelLeftClose,
   PanelLeft,
   Kanban,
+  FolderOpen,
 } from "lucide-react";
 import { useState } from "react";
 import { useAppStore } from "@/store/useAppStore";
@@ -96,20 +97,22 @@ export default function AdminLayout() {
             end
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <LayoutDashboard className="icon" /> Dashboard
+            <LayoutDashboard className="icon" />{" "}
+            <span className="nav-label">Dashboard</span>
           </NavLink>
           <NavLink
             to="/admin/clientes"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <Users className="icon" /> {!isSidebarCollapsed && "Clientes"}
+            <Users className="icon" />{" "}
+            <span className="nav-label">Clientes</span>
           </NavLink>
           <NavLink
             to="/admin/leads"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
             <Kanban className="icon" />{" "}
-            {!isSidebarCollapsed && "Leads & Follow-up"}
+            <span className="nav-label">Leads & Follow-up</span>
           </NavLink>
 
           {/* Client Picker */}
@@ -248,7 +251,7 @@ export default function AdminLayout() {
           {hasCliente && (
             <>
               <div className="sidebar-section-title" style={{ marginTop: 16 }}>
-                Custos & Preços
+                Operacional
               </div>
               <NavLink
                 to="/admin/insumos"
@@ -256,7 +259,8 @@ export default function AdminLayout() {
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <Package className="icon" /> Insumos
+                <Package className="icon" />{" "}
+                <span className="nav-label">Insumos</span>
               </NavLink>
               <NavLink
                 to="/admin/fichas-tecnicas"
@@ -264,7 +268,8 @@ export default function AdminLayout() {
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <BookOpen className="icon" /> Fichas Técnicas
+                <BookOpen className="icon" />{" "}
+                <span className="nav-label">Fichas Técnicas</span>
               </NavLink>
               <NavLink
                 to="/admin/simulador"
@@ -272,7 +277,8 @@ export default function AdminLayout() {
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <BarChart3 className="icon" /> Simulador CMV
+                <BarChart3 className="icon" />{" "}
+                <span className="nav-label">Simulador CMV</span>
               </NavLink>
               <NavLink
                 to="/admin/raio-x-produtos"
@@ -280,7 +286,26 @@ export default function AdminLayout() {
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <Sparkles className="icon" /> Raio-X Produtos
+                <Sparkles className="icon" />{" "}
+                <span className="nav-label">Raio-X Produtos</span>
+              </NavLink>
+              <NavLink
+                to="/admin/estoque"
+                className={({ isActive }) =>
+                  `nav-item ${isActive ? "active" : ""}`
+                }
+              >
+                <Warehouse className="icon" />{" "}
+                <span className="nav-label">Estoque</span>
+              </NavLink>
+              <NavLink
+                to="/admin/pessoas"
+                className={({ isActive }) =>
+                  `nav-item ${isActive ? "active" : ""}`
+                }
+              >
+                <UserCheck className="icon" />{" "}
+                <span className="nav-label">Pessoas</span>
               </NavLink>
 
               <div className="sidebar-section-title">Financeiro</div>
@@ -290,7 +315,8 @@ export default function AdminLayout() {
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <TrendingDown className="icon" /> DRE Gerencial
+                <TrendingDown className="icon" />{" "}
+                <span className="nav-label">DRE Gerencial</span>
               </NavLink>
 
               <div className="sidebar-section-title">Diagnóstico</div>
@@ -300,7 +326,8 @@ export default function AdminLayout() {
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <ClipboardCheck className="icon" /> Scorecard
+                <ClipboardCheck className="icon" />{" "}
+                <span className="nav-label">Scorecard</span>
               </NavLink>
               <NavLink
                 to="/admin/avaliacao"
@@ -308,43 +335,28 @@ export default function AdminLayout() {
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <MessageSquare className="icon" /> Avaliação de Percepção
+                <MessageSquare className="icon" />{" "}
+                <span className="nav-label">Avaliação de Percepção</span>
               </NavLink>
 
-              <div className="sidebar-section-title">Operações</div>
+              <div className="sidebar-section-title">Acompanhamento</div>
               <NavLink
                 to="/admin/plano-acao"
                 className={({ isActive }) =>
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <ClipboardList className="icon" /> Plano de Ação
+                <ClipboardList className="icon" />{" "}
+                <span className="nav-label">Plano de Ação</span>
               </NavLink>
-              <NavLink
-                to="/admin/estoque"
-                className={({ isActive }) =>
-                  `nav-item ${isActive ? "active" : ""}`
-                }
-              >
-                <Warehouse className="icon" /> Estoque
-              </NavLink>
-              <NavLink
-                to="/admin/pessoas"
-                className={({ isActive }) =>
-                  `nav-item ${isActive ? "active" : ""}`
-                }
-              >
-                <UserCheck className="icon" /> Pessoas
-              </NavLink>
-
-              <div className="sidebar-section-title">Acompanhamento</div>
               <NavLink
                 to="/admin/evolucao"
                 className={({ isActive }) =>
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <TrendingUp className="icon" /> Evolução
+                <TrendingUp className="icon" />{" "}
+                <span className="nav-label">Evolução</span>
               </NavLink>
               <NavLink
                 to="/admin/metas"
@@ -352,7 +364,8 @@ export default function AdminLayout() {
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <Target className="icon" /> Metas
+                <Target className="icon" />{" "}
+                <span className="nav-label">Metas</span>
               </NavLink>
               <NavLink
                 to="/admin/atendimentos"
@@ -360,7 +373,19 @@ export default function AdminLayout() {
                   `nav-item ${isActive ? "active" : ""}`
                 }
               >
-                <Calendar className="icon" /> Atendimentos
+                <Calendar className="icon" />{" "}
+                <span className="nav-label">Atendimentos</span>
+              </NavLink>
+
+              <div className="sidebar-section-title">Arquivos</div>
+              <NavLink
+                to="/admin/arquivos"
+                className={({ isActive }) =>
+                  `nav-item ${isActive ? "active" : ""}`
+                }
+              >
+                <FolderOpen className="icon" />{" "}
+                <span className="nav-label">Arquivos do Cliente</span>
               </NavLink>
             </>
           )}

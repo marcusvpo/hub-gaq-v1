@@ -14,6 +14,7 @@ import {
   Calculator,
   PanelLeft,
   PanelLeftClose,
+  FolderOpen,
 } from "lucide-react";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -81,7 +82,8 @@ export default function ClientLayout() {
             end
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <LayoutDashboard className="icon" /> Dashboard
+            <LayoutDashboard className="icon" />{" "}
+            <span className="nav-label">Dashboard</span>
           </NavLink>
 
           <div className="sidebar-section-title">Custos & Preços</div>
@@ -89,13 +91,15 @@ export default function ClientLayout() {
             to="/client/ranking"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <BarChart3 className="icon" /> Ranking de Produtos
+            <BarChart3 className="icon" />{" "}
+            <span className="nav-label">Ranking de Produtos</span>
           </NavLink>
           <NavLink
             to="/client/alertas"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <AlertTriangle className="icon" /> Alertas de Custo
+            <AlertTriangle className="icon" />{" "}
+            <span className="nav-label">Alertas de Custo</span>
           </NavLink>
 
           <div className="sidebar-section-title">Saúde Financeira</div>
@@ -103,13 +107,15 @@ export default function ClientLayout() {
             to="/client/lucro"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <Gauge className="icon" /> Velocímetro de Lucro
+            <Gauge className="icon" />{" "}
+            <span className="nav-label">Velocímetro de Lucro</span>
           </NavLink>
           <NavLink
             to="/client/cascata"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <TrendingDown className="icon" /> Cascata Financeira
+            <TrendingDown className="icon" />{" "}
+            <span className="nav-label">Cascata Financeira</span>
           </NavLink>
 
           <div className="sidebar-section-title">Diagnóstico</div>
@@ -117,13 +123,15 @@ export default function ClientLayout() {
             to="/client/raio-x"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <RadarIcon className="icon" /> Scorecard
+            <RadarIcon className="icon" />{" "}
+            <span className="nav-label">Scorecard</span>
           </NavLink>
           <NavLink
             to="/client/plano-acao"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <ListChecks className="icon" /> Plano de Ação
+            <ListChecks className="icon" />{" "}
+            <span className="nav-label">Plano de Ação</span>
           </NavLink>
 
           <div className="sidebar-section-title">Inteligência</div>
@@ -131,19 +139,31 @@ export default function ClientLayout() {
             to="/client/progresso"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <TrendingUp className="icon" /> Meu Progresso
+            <TrendingUp className="icon" />{" "}
+            <span className="nav-label">Meu Progresso</span>
           </NavLink>
           <NavLink
             to="/client/cardapio"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <UtensilsCrossed className="icon" /> Cardápio Inteligente
+            <UtensilsCrossed className="icon" />{" "}
+            <span className="nav-label">Cardápio Inteligente</span>
           </NavLink>
           <NavLink
             to="/client/simulador"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <Calculator className="icon" /> Simulador "E Se?"
+            <Calculator className="icon" />{" "}
+            <span className="nav-label">Simulador "E Se?"</span>
+          </NavLink>
+
+          <div className="sidebar-section-title">Arquivos</div>
+          <NavLink
+            to="/client/arquivos"
+            className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+          >
+            <FolderOpen className="icon" />{" "}
+            <span className="nav-label">Meus Arquivos</span>
           </NavLink>
         </nav>
 

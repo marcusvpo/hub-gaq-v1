@@ -12,6 +12,8 @@ import {
   Mail,
   Phone,
   Tag,
+  DollarSign,
+  TrendingUp,
 } from "lucide-react";
 
 interface Lead {
@@ -169,6 +171,19 @@ export default function LeadsPage() {
     return matchesSearch && matchesPriority;
   });
 
+  const leadsAtivos = leads.filter(
+    (l) => !["fechado", "perdido"].includes(l.status),
+  );
+  const valorNaMesa = leadsAtivos.reduce(
+    (acc, lead) => acc + (Number(lead.valor_estimado) || 0),
+    0,
+  );
+  const leadsGanhos = leads.filter((l) => l.status === "fechado");
+  const valorFechado = leadsGanhos.reduce(
+    (acc, lead) => acc + (Number(lead.valor_estimado) || 0),
+    0,
+  );
+
   return (
     <div className="page-body" style={{ padding: "0 24px 24px" }}>
       <div
@@ -191,6 +206,124 @@ export default function LeadsPage() {
         >
           <Plus size={18} /> Novo Lead
         </button>
+      </div>
+
+      <style>
+        {`
+          .kanban-board::-webkit-scrollbar {
+            height: 12px;
+          }
+          .kanban-board::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+          }
+          .kanban-board::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 8px;
+            border: 3px solid #f1f5f9;
+          }
+          .kanban-board::-webkit-scrollbar-thumb:hover {
+            background-color: #94A3B8;
+          }
+          .kanban-column {
+            min-width: 260px;
+            max-width: 280px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+          }
+        `}
+      </style>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 24,
+          marginBottom: 24,
+        }}
+      >
+        <div
+          className="card"
+          style={{
+            padding: 20,
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+          }}
+        >
+          <div
+            style={{
+              padding: 12,
+              background: "#EFF6FF",
+              borderRadius: 12,
+              color: "#3B82F6",
+            }}
+          >
+            <DollarSign size={24} />
+          </div>
+          <div>
+            <div
+              style={{ fontSize: "0.85rem", color: "#64748B", fontWeight: 600 }}
+            >
+              Valor na Mesa (Em aberto)
+            </div>
+            <div
+              style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1E293B" }}
+            >
+              {new Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(valorNaMesa)}
+            </div>
+            <div
+              style={{ fontSize: "0.75rem", color: "#94A3B8", marginTop: 4 }}
+            >
+              De {leadsAtivos.length} leads em negociação
+            </div>
+          </div>
+        </div>
+        <div
+          className="card"
+          style={{
+            padding: 20,
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+          }}
+        >
+          <div
+            style={{
+              padding: 12,
+              background: "#ECFDF5",
+              borderRadius: 12,
+              color: "#10B981",
+            }}
+          >
+            <TrendingUp size={24} />
+          </div>
+          <div>
+            <div
+              style={{ fontSize: "0.85rem", color: "#64748B", fontWeight: 600 }}
+            >
+              Valor Fechado (Ganhos)
+            </div>
+            <div
+              style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1E293B" }}
+            >
+              {new Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(valorFechado)}
+            </div>
+            <div
+              style={{ fontSize: "0.75rem", color: "#94A3B8", marginTop: 4 }}
+            >
+              De {leadsGanhos.length} leads convertidos
+            </div>
+          </div>
+        </div>
       </div>
 
       <div
@@ -270,20 +403,15 @@ export default function LeadsPage() {
         <div
           className="kanban-board"
           style={{
-            display: "grid",
-            gridTemplateColumns: `repeat(${KANBAN_STAGES.length}, 300px)`,
-            gap: 20,
+            display: "flex",
+            gap: 16,
             overflowX: "auto",
-            paddingBottom: 20,
-            minHeight: "calc(100vh - 250px)",
+            paddingBottom: 24,
+            minHeight: "calc(100vh - 350px)",
           }}
         >
           {KANBAN_STAGES.map((stage) => (
-            <div
-              key={stage.id}
-              className="kanban-column"
-              style={{ display: "flex", flexDirection: "column", gap: 12 }}
-            >
+            <div key={stage.id} className="kanban-column">
               <div
                 style={{
                   display: "flex",
@@ -475,9 +603,9 @@ export default function LeadsPage() {
                               color: "#10B981",
                             }}
                           >
-                            R${" "}
                             {Number(lead.valor_estimado).toLocaleString(
                               "pt-BR",
+                              { style: "currency", currency: "BRL" },
                             )}
                           </div>
                         )}
@@ -755,14 +883,23 @@ export default function LeadsPage() {
                   <label className="form-label">Valor Estimado</label>
                   <input
                     className="form-input"
-                    type="number"
-                    value={formData.valor_estimado || 0}
-                    onChange={(e) =>
+                    type="text"
+                    value={
+                      formData.valor_estimado
+                        ? formData.valor_estimado.toLocaleString("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          })
+                        : ""
+                    }
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
                       setFormData({
                         ...formData,
-                        valor_estimado: Number(e.target.value),
-                      })
-                    }
+                        valor_estimado: Number(value) / 100,
+                      });
+                    }}
+                    placeholder="R$ 0,00"
                   />
                 </div>
               </div>

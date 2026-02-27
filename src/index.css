@@ -252,6 +252,10 @@ input, select, textarea {
   display: none;
 }
 
+.sidebar.collapsed .nav-item .nav-label {
+  display: none;
+}
+
 
 .sidebar-header {
   padding: var(--space-5) var(--space-5);

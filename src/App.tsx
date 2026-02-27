@@ -20,6 +20,7 @@ import MetasPage from "@/pages/admin/MetasPage";
 import EvolucaoPage from "@/pages/admin/EvolucaoPage";
 import PessoasPage from "@/pages/admin/PessoasPage";
 import LeadsPage from "@/pages/admin/LeadsPage";
+import ArquivosPage from "@/pages/admin/ArquivosPage";
 import ClientDashboard from "@/pages/client/ClientDashboard";
 import RankingProdutosPage from "@/pages/client/RankingProdutosPage";
 import AlertaCustosPage from "@/pages/client/AlertaCustosPage";
@@ -30,6 +31,7 @@ import PlanoAcaoPage from "@/pages/client/PlanoAcaoPage";
 import ProgressoClientPage from "@/pages/client/ProgressoClientPage";
 import CardapioClientPage from "@/pages/client/CardapioClientPage";
 import SimuladorESeClientPage from "@/pages/client/SimuladorESeClientPage";
+import ArquivosClientPage from "@/pages/client/ArquivosClientPage";
 import type { ReactNode } from "react";
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -113,6 +115,7 @@ export default function App() {
             <Route path="metas" element={<MetasPage />} />
             <Route path="evolucao" element={<EvolucaoPage />} />
             <Route path="pessoas" element={<PessoasPage />} />
+            <Route path="arquivos" element={<ArquivosPage />} />
           </Route>
 
           {/* Client Routes */}
@@ -134,6 +137,7 @@ export default function App() {
             <Route path="progresso" element={<ProgressoClientPage />} />
             <Route path="cardapio" element={<CardapioClientPage />} />
             <Route path="simulador" element={<SimuladorESeClientPage />} />
+            <Route path="arquivos" element={<ArquivosClientPage />} />
           </Route>
 
           <Route path="*" element={<SmartRedirect />} />
