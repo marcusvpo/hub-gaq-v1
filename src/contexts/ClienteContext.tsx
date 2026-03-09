@@ -47,29 +47,50 @@ export function useCliente() {
 }
 
 export function ClienteProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user) loadClientes();
-  }, [user]);
+  }, [user, profile]);
 
   async function loadClientes() {
     setLoading(true);
-    const { data } = await supabase
-      .from("clientes")
-      .select("*")
-      .eq("ativo", true)
-      .order("nome_fantasia");
-    if (data) {
-      setClientes(data);
-      // Auto-select first if none selected
-      if (!selectedCliente && data.length > 0) {
-        const saved = localStorage.getItem("hub-gaq-selected-cliente");
-        const found = saved ? data.find((c) => c.id === saved) : null;
-        setSelectedCliente(found || data[0]);
+
+    if (profile?.role === "client") {
+      const { data: cu } = await supabase
+        .from("cliente_users")
+        .select("cliente_id")
+        .eq("user_id", user?.id)
+        .limit(1);
+
+      if (cu && cu.length > 0) {
+        const { data } = await supabase
+          .from("clientes")
+          .select("*")
+          .eq("id", cu[0].cliente_id);
+
+        if (data) {
+          setClientes(data);
+          setSelectedCliente(data[0]);
+        }
+      }
+    } else {
+      const { data } = await supabase
+        .from("clientes")
+        .select("*")
+        .eq("ativo", true)
+        .order("nome_fantasia");
+      if (data) {
+        setClientes(data);
+        // Auto-select first if none selected
+        if (!selectedCliente && data.length > 0) {
+          const saved = localStorage.getItem("hub-gaq-selected-cliente");
+          const found = saved ? data.find((c) => c.id === saved) : null;
+          setSelectedCliente(found || data[0]);
+        }
       }
     }
     setLoading(false);

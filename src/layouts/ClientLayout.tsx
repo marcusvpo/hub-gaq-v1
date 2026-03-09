@@ -15,6 +15,9 @@ import {
   PanelLeft,
   PanelLeftClose,
   FolderOpen,
+  Package,
+  BookOpen,
+  Sparkles,
 } from "lucide-react";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -84,6 +87,36 @@ export default function ClientLayout() {
           >
             <LayoutDashboard className="icon" />{" "}
             <span className="nav-label">Dashboard</span>
+          </NavLink>
+
+          <div className="sidebar-section-title">Operacional</div>
+          <NavLink
+            to="/client/insumos"
+            className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+          >
+            <Package className="icon" />{" "}
+            <span className="nav-label">Insumos</span>
+          </NavLink>
+          <NavLink
+            to="/client/fichas-tecnicas"
+            className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+          >
+            <BookOpen className="icon" />{" "}
+            <span className="nav-label">Fichas Técnicas</span>
+          </NavLink>
+          <NavLink
+            to="/client/simulador-cmv"
+            className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+          >
+            <BarChart3 className="icon" />{" "}
+            <span className="nav-label">Simulador CMV</span>
+          </NavLink>
+          <NavLink
+            to="/client/raio-x-produtos"
+            className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+          >
+            <Sparkles className="icon" />{" "}
+            <span className="nav-label">Raio-X Produtos</span>
           </NavLink>
 
           <div className="sidebar-section-title">Custos & Preços</div>

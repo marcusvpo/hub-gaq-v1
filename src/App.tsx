@@ -123,11 +123,20 @@ export default function App() {
             path="/client"
             element={
               <ProtectedRoute>
-                <ClientLayout />
+                <ClienteProvider>
+                  <ClientLayout />
+                </ClienteProvider>
               </ProtectedRoute>
             }
           >
             <Route index element={<ClientDashboard />} />
+            <Route path="insumos" element={<InsumosPage />} />
+            <Route path="fichas-tecnicas" element={<FichasTecnicasPage />} />
+            <Route path="simulador-cmv" element={<SimuladorCMVPage />} />
+            <Route
+              path="raio-x-produtos"
+              element={<RaioXProdutosAdminPage />}
+            />
             <Route path="ranking" element={<RankingProdutosPage />} />
             <Route path="alertas" element={<AlertaCustosPage />} />
             <Route path="lucro" element={<VelocimetroLucroPage />} />

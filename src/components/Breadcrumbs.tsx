@@ -8,6 +8,7 @@ const routeConfig: Record<string, string> = {
   insumos: "Insumos",
   "fichas-tecnicas": "Fichas Técnicas",
   simulador: "Simulador CMV",
+  "simulador-cmv": "Simulador CMV",
   dre: "DRE Gerencial",
   scorecard: "Scorecard",
   "raio-x-produtos": "Raio-X Produtos",
