@@ -105,6 +105,26 @@ export default function ClientLayout() {
             <span className="nav-label">Fichas Técnicas</span>
           </NavLink>
           <NavLink
+            to="/client/ingredientes-beneficiados"
+            className={({ isActive }) =>
+              `nav-item submenu ${isActive ? "active" : ""}`
+            }
+          >
+            <div
+              style={{ width: 24, display: "flex", justifyContent: "center" }}
+            >
+              <div
+                style={{
+                  width: 4,
+                  height: 4,
+                  borderRadius: "50%",
+                  background: "currentColor",
+                }}
+              />
+            </div>
+            <span className="nav-label">Ingredientes Beneficiados</span>
+          </NavLink>
+          <NavLink
             to="/client/simulador-cmv"
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >

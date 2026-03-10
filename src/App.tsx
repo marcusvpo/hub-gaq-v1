@@ -7,6 +7,8 @@ import LoginPage from "@/pages/LoginPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import ClientesPage from "@/pages/admin/ClientesPage";
 import InsumosPage from "@/pages/admin/InsumosPage";
+import IngredientesBeneficiadosPage from "@/pages/admin/IngredientesBeneficiadosPage";
+
 import FichasTecnicasPage from "@/pages/admin/FichasTecnicasPage";
 import SimuladorCMVPage from "@/pages/admin/SimuladorCMVPage";
 import DREPage from "@/pages/admin/DREPage";
@@ -100,6 +102,10 @@ export default function App() {
             <Route path="clientes" element={<ClientesPage />} />
             <Route path="leads" element={<LeadsPage />} />
             <Route path="insumos" element={<InsumosPage />} />
+            <Route
+              path="ingredientes-beneficiados"
+              element={<IngredientesBeneficiadosPage />}
+            />
             <Route path="fichas-tecnicas" element={<FichasTecnicasPage />} />
             <Route path="simulador" element={<SimuladorCMVPage />} />
             <Route path="dre" element={<DREPage />} />
@@ -131,6 +137,10 @@ export default function App() {
           >
             <Route index element={<ClientDashboard />} />
             <Route path="insumos" element={<InsumosPage />} />
+            <Route
+              path="ingredientes-beneficiados"
+              element={<IngredientesBeneficiadosPage />}
+            />
             <Route path="fichas-tecnicas" element={<FichasTecnicasPage />} />
             <Route path="simulador-cmv" element={<SimuladorCMVPage />} />
             <Route
