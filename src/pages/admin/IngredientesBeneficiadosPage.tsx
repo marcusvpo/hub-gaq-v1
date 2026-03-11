@@ -152,7 +152,7 @@ export default function IngredientesBeneficiadosPage() {
     await supabase.from("ingrediente_beneficiado_itens").insert({
       ingrediente_beneficiado_id: selectedIngrediente.id,
       insumo_id: insumoId,
-      quantidade: 0, // Using 0 so user can type properly later
+      quantidade: 0.1, // Changed from 0 to 0.1 to avoid db constraints
       custo_por_unidade: ins?.custo_por_unidade || 0,
     });
     await loadItens(selectedIngrediente.id);

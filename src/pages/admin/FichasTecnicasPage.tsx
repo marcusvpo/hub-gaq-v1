@@ -63,13 +63,52 @@ export default function FichasTecnicasPage() {
 
   async function loadInsumos() {
     if (!selectedCliente) return;
-    const { data } = await supabase
+
+    const { data: dataInsumos } = await supabase
       .from("insumos")
       .select("id, nome, custo_por_unidade, unidade_uso")
       .eq("cliente_id", selectedCliente.id)
-      .eq("ativo", true)
-      .order("nome");
-    if (data) setInsumos(data);
+      .eq("ativo", true);
+
+    const { data: dataBeneficiados } = await supabase
+      .from("ingredientes_beneficiados")
+      .select("id, nome, rendimento, unidade_rendimento")
+      .eq("cliente_id", selectedCliente.id);
+
+    // Precisamos buscar o custo total para calcular o custo por unidade do ingrediente beneficiado
+    const { data: dataItensBeneficiados } = await supabase
+      .from("ingrediente_beneficiado_itens")
+      .select("ingrediente_beneficiado_id, quantidade, custo_por_unidade");
+
+    let allInsumos = dataInsumos || [];
+
+    if (dataBeneficiados) {
+      const beneficiadosFormatados = dataBeneficiados.map((ib) => {
+        // Calcular custo total desse ingrediente
+        const itensDesteIB = dataItensBeneficiados?.filter(
+          (i) => i.ingrediente_beneficiado_id === ib.id
+        ) || [];
+        
+        const custoTotal = itensDesteIB.reduce(
+          (sum, item) => sum + (item.quantidade * item.custo_por_unidade),
+          0
+        );
+        
+        const custoPorUnidadeCalc = ib.rendimento > 0 ? custoTotal / ib.rendimento : 0;
+
+        return {
+          id: ib.id,
+          nome: `[Beneficiado] ${ib.nome}`,
+          custo_por_unidade: custoPorUnidadeCalc,
+          unidade_uso: ib.unidade_rendimento || "un",
+        };
+      });
+
+      allInsumos = [...allInsumos, ...beneficiadosFormatados];
+    }
+
+    allInsumos.sort((a, b) => a.nome.localeCompare(b.nome));
+    setInsumos(allInsumos);
   }
 
   async function loadItens(fichaId: string) {
@@ -259,6 +298,8 @@ export default function FichasTecnicasPage() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   marginBottom: 20,
+                  flexWrap: "wrap",
+                  gap: 16,
                 }}
               >
                 <div>
@@ -281,20 +322,43 @@ export default function FichasTecnicasPage() {
                     </span>
                   </div>
                 </div>
-                <div className="form-group" style={{ margin: 0, width: 120 }}>
-                  <label className="form-label" style={{ fontSize: "0.7rem" }}>
-                    Preço Venda
-                  </label>
-                  <input
-                    className="form-input"
-                    type="number"
-                    step="0.01"
-                    value={precoVenda}
-                    onChange={(e) =>
-                      handleUpdatePreco(parseFloat(e.target.value) || 0)
-                    }
-                    style={{ fontWeight: 700 }}
-                  />
+                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                  <div className="form-group" style={{ margin: 0, width: 120 }}>
+                    <label className="form-label" style={{ fontSize: "0.7rem" }}>
+                      Preço Venda (R$)
+                    </label>
+                    <input
+                      key={`preco-${selectedFicha.id}`}
+                      className="form-input"
+                      type="text"
+                      defaultValue={precoVenda}
+                      onBlur={(e) => {
+                        const val = e.target.value.replace(",", ".");
+                        handleUpdatePreco(parseFloat(val) || 0);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          const val = e.currentTarget.value.replace(",", ".");
+                          handleUpdatePreco(parseFloat(val) || 0);
+                          e.currentTarget.blur();
+                        }
+                      }}
+                      style={{ fontWeight: 700 }}
+                    />
+                  </div>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={async () => {
+                      if (!confirm("Tem certeza que deseja excluir esta ficha técnica?")) return;
+                      await supabase.from("fichas_tecnicas").delete().eq("id", selectedFicha.id);
+                      setFichas(fichas.filter((f) => f.id !== selectedFicha.id));
+                      setSelectedFicha(null);
+                    }}
+                    style={{ padding: "8px", color: "#EF4444", borderColor: "#EF4444" }}
+                    title="Excluir Ficha"
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </div>
               </div>
 
